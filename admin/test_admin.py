@@ -5,6 +5,8 @@ from admin.src.api.v1.admin_controllers import admin_bp
 from shared.db import db
 from shared.models.AdminsModel import Admin
 from admin.config import get_config
+from flask_jwt_extended import JWTManager
+from app import create_app 
 
 @pytest.fixture
 def app():
