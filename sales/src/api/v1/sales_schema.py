@@ -1,6 +1,4 @@
-from marshmallow import Schema, fields
-
-from marshmallow import Schema, fields, validates_schema, ValidationError
+from marshmallow import Schema, fields, validates_schema, ValidationError, validate
 
 class PurchaseSchema(Schema):
     item_ids_or_names = fields.List(fields.String(), required=True)
@@ -19,3 +17,14 @@ class PurchaseSchema(Schema):
 
 class ReversePurchaseSchema(Schema):
     transaction_id = fields.Integer(required=True)
+
+class ItemSchema(Schema):
+    item_id = fields.Integer(validate=validate.Range(min=1))
+    name = fields.String(validate=validate.Length(min=1))
+
+    @validates_schema
+    def validate_item_id(self, data, **kwargs):
+        if not data.get('item_id') and not data.get('name'):
+            raise ValidationError('Either item id or name must be provided')
+        if data.get('item_id') and data.get('name'):
+            raise ValidationError('Either item id or name must be provided, not both')

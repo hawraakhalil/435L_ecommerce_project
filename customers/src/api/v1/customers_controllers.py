@@ -13,7 +13,7 @@ from customers.src.api.v1.customers_service import CustomerService
 customers_bp = Blueprint('customers', __name__, url_prefix='/customers')
 
 
-@customers_bp.route('/register_customer', methods=['POST'])
+@customers_bp.route('/register_customer', methods=['PUT'])
 def register_customer():
     data = request.get_json()
     schema = RegisterCustomerSchema()
@@ -51,7 +51,7 @@ def login_customer():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@customers_bp.route('/logout_customer', methods=['POST'])
+@customers_bp.route('/logout_customer', methods=['DELETE'])
 @jwt_required()
 def logout_customer():
     customer_id = get_jwt_identity()
@@ -64,7 +64,7 @@ def logout_customer():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@customers_bp.route('/update_customer', methods=['GET'])
+@customers_bp.route('/update_customer', methods=['PUT'])
 @jwt_required()
 def update_customer():
     data = request.get_json()
@@ -84,7 +84,7 @@ def update_customer():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@customers_bp.route('/get_customer_info', methods=['GET'])
+@customers_bp.route('/get_customer_info', methods=['POST'])
 @jwt_required()
 def get_customer_info():
     customer_id = get_jwt_identity()

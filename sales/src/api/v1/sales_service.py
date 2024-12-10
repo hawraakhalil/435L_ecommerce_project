@@ -1,9 +1,10 @@
 import requests
+from datetime import datetime, timedelta
 from shared.db import db
 from shared.models.TransactionsModel import Transaction
 from shared.models.ItemsModel import Item
 from shared.models.CustomersModel import Customer
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadRequest
 import pybreaker
 from sales.errors import InsufficientStock, InsufficientBalance
 
@@ -29,6 +30,12 @@ class SalesService:
         if not customer:
             raise NotFound(f'Customer with id {customer_id} not found')
         return customer
+    
+    def get_transaction(self, transaction_id):
+        transaction = Transaction.query.filter(Transaction.id == transaction_id).first()
+        if not transaction:
+            raise NotFound(f'Transaction with id {transaction_id} not found')
+        return transaction
 
     def purchase(self, data, customer_id):
         item_ids_or_names = data.get('item_ids_or_names', [])
@@ -37,7 +44,7 @@ class SalesService:
         customer = self.get_customer_by_id(customer_id)
 
         items = []
-        item_quantities = []
+        items_quantities = []
         total_price = 0
 
         for index in range(len(item_ids_or_names)):
@@ -51,28 +58,49 @@ class SalesService:
             if item.quantity < quantity:
                 raise InsufficientStock(f'Item {item.id} with name {item.name} has only {item.quantity} left in stock')
             
-            total_price += item.price_per_unit
+            total_price += item.price_per_unit * quantity
 
             items.append(item)
-            item_quantities.append(quantity)
+            items_quantities.append(quantity)
 
         if customer.balance < total_price:
             raise InsufficientBalance(f'Customer {customer.id} has only {customer.balance} in balance')
 
         customer.balance -= total_price
 
-        for item, quantity in zip(items, item_quantities):
+        for item, quantity in zip(items, items_quantities):
             item.quantity -= quantity
 
-        transaction = Transaction(items=items, item_quantities=item_quantities, total_price=total_price, status='completed')
+        transaction = Transaction(items_quantities=items_quantities, total_price=total_price, items=items, customer=customer, status='completed')
         self.db_session.add(transaction)
         self.db_session.commit()
         return transaction.to_dict()
 
-    def reverse_purchase(self, data):
-        pass
+    def reverse_purchase(self, data, customer_id):
+        transaction_id = data.get('transaction_id')
+        transaction = self.get_transaction(transaction_id)
+        customer = self.get_customer_by_id(customer_id)
 
-    def get_transactions(self):
-        pass
+        if transaction.customer.id != customer.id:
+            raise BadRequest(f'Transaction with id {transaction_id} does not belong to customer with id {customer_id}')
+        
+        if transaction.status != 'completed':
+            raise BadRequest(f'Transaction with id {transaction_id} is already reversed')
+        
+        if transaction.created_at < datetime.now() - timedelta(days=10):
+            raise BadRequest(f'Transaction with id {transaction_id} is older than 10 days and cannot be reversed')
+
+        customer.balance += transaction.total_price
+
+        for item, quantity in zip(transaction.items, transaction.items_quantities):
+            item.quantity += quantity
+
+        transaction.status = 'reversed'
+        self.db_session.commit()
+        return transaction.to_dict()
+
+    def get_user_transactions(self, user_id):
+        transactions = Transaction.query.filter(Transaction.customer_id == user_id).all()
+        return [transaction.to_dict() for transaction in transactions]
 
 
