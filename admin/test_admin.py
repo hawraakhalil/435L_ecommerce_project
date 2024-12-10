@@ -6,20 +6,19 @@ from shared.db import db
 from shared.models.AdminsModel import Admin
 from admin.config import get_config
 from flask_jwt_extended import JWTManager
-from app import create_app 
+from admin.app import create_app 
 
 @pytest.fixture
 def app():
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['JWT_SECRET_KEY'] = 'test_secret'
-    app.register_blueprint(admin_bp)
-    db.init_app(app)
+    app = create_app()
+    app.config['TESTING'] = True
+    app.config['JWT_SECRET_KEY'] = 'test-secret-key'
+    JWTManager(app)  # Initialize JWTManager for tests
     with app.app_context():
-        db.create_all()
+        db.create_all()  # Create database tables for testing
     yield app
     with app.app_context():
+        db.session.remove()
         db.drop_all()
 
 @pytest.fixture
@@ -42,7 +41,7 @@ def admin_token(app):
         admin.set_password('password123')
         db.session.add(admin)
         db.session.commit()
-        token = create_access_token(identity=admin.id)
+        token = create_access_token(identity=str(admin.id))
         return token
 
 def test_register_admin(client):
@@ -57,7 +56,7 @@ def test_register_admin(client):
         "gender": "male",
         "marital_status": "single"
     }
-    response = client.post('/admin/register_admin', json=payload)
+    response = client.put('/admin/register_admin', json=payload)
     assert response.status_code == 201
     assert response.json['access']
     assert response.json['refresh']
@@ -76,21 +75,25 @@ def test_update_admin(client, admin_token):
     headers = {"Authorization": f"Bearer {admin_token}"}
     payload = {
         "first_name": "Updated",
+        "last_name": "Updated",
         "phone": "87654321"
     }
-    response = client.get('/admin/update_admin', json=payload, headers=headers)
+    response = client.put('/admin/update_admin', json=payload, headers=headers)
+    print(response.json)
     assert response.status_code == 200
     assert response.json['message'] == "Admin updated successfully"
 
 def test_logout_admin(client, admin_token):
     headers = {"Authorization": f"Bearer {admin_token}"}
-    response = client.post('/admin/logout_admin', headers=headers)
+    response = client.delete('/admin/logout_admin', headers=headers)
+    print(response.json)
     assert response.status_code == 200
     assert response.json['message'] == "Admin logged out successfully"
 
 def test_get_admin_info(client, admin_token):
     headers = {"Authorization": f"Bearer {admin_token}"}
-    response = client.get('/admin/get_admin_info', headers=headers)
+    response = client.post('/admin/get_admin_info', headers=headers)
+    print(response.json)
     assert response.status_code == 200
     assert "username" in response.json
     assert response.json["username"] == "testadmin"

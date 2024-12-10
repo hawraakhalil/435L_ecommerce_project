@@ -13,7 +13,7 @@ from admin.src.api.v1.admin_service import AdminService
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
-@admin_bp.route('/register_admin', methods=['POST'])
+@admin_bp.route('/register_admin', methods=['PUT'])
 def register_admin():
     data = request.get_json()
     schema = RegisterAdminSchema()

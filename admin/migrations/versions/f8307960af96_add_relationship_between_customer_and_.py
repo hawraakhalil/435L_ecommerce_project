@@ -1,8 +1,8 @@
-"""Add relationships and foreign keys
+"""Add relationship between Customer and Review
 
-Revision ID: f5a5221702bb
+Revision ID: f8307960af96
 Revises: 
-Create Date: 2024-12-10 23:05:16.658643
+Create Date: 2024-12-10 23:12:15.152048
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f5a5221702bb'
+revision = 'f8307960af96'
 down_revision = None
 branch_labels = None
 depends_on = None
