@@ -11,7 +11,7 @@ from inventory.src.api.v1.inventory_schema import AddItemSchema, RestockItemSche
 
 inventory_bp = Blueprint('inventory', __name__)
 
-    
+
 @inventory_bp.route('/add_item', methods=['POST'])
 @jwt_required()
 def add_item():
@@ -88,7 +88,7 @@ def delete_item():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@inventory_bp.route('/get_item', methods=['GET'])
+@inventory_bp.route('/get_item', methods=['POST'])
 @jwt_required()
 def get_item():
     data = request.get_json()
@@ -118,7 +118,7 @@ def get_items():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@inventory_bp.route('/get_items_by_category', methods=['GET'])
+@inventory_bp.route('/get_items_by_category', methods=['POST'])
 @jwt_required()
 def get_items_by_category():
     data = request.get_json()

@@ -51,7 +51,7 @@ def login_admin():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@admin_bp.route('/logout_admin', methods=['POST'])
+@admin_bp.route('/logout_admin', methods=['DELETE'])
 @jwt_required()
 def logout_admin():
     admin_id = get_jwt_identity()
@@ -64,7 +64,7 @@ def logout_admin():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@admin_bp.route('/update_admin', methods=['GET'])
+@admin_bp.route('/update_admin', methods=['PUT'])
 @jwt_required()
 def update_admin():
     data = request.get_json()
@@ -84,7 +84,7 @@ def update_admin():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@admin_bp.route('/get_admin_info', methods=['GET'])
+@admin_bp.route('/get_admin_info', methods=['POST'])
 @jwt_required()
 def get_admin_info():
     admin_id = get_jwt_identity()

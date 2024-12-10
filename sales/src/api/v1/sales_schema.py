@@ -18,4 +18,4 @@ class PurchaseSchema(Schema):
             raise ValidationError('All identifiers must be either all IDs or all names.')
 
 class ReversePurchaseSchema(Schema):
-    transaction_id = fields.Integer()
+    transaction_id = fields.Integer(required=True)
