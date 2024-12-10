@@ -1,5 +1,6 @@
 from flask import jsonify
-from customers.extensions import db, jwt
+from shared.db import db
+from customers.extensions import jwt
 from customers.src.api.v1.customers_service import CustomerService
 
 @jwt.token_in_blocklist_loader

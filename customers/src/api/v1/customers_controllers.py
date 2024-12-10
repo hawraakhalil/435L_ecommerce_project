@@ -5,7 +5,7 @@ from werkzeug.exceptions import NotFound
 from marshmallow import ValidationError
 from customers.errors import AuthenticationError
 
-from customers.extensions import db
+from shared.db import db
 from customers.src.api.v1.customers_schema import RegisterCustomerSchema, LoginCustomerSchema, UpdateCustomerSchema
 from customers.src.api.v1.customers_service import CustomerService
 
