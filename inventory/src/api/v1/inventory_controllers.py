@@ -9,7 +9,7 @@ from inventory.src.api.v1.inventory_service import InventoryService
 from inventory.src.api.v1.inventory_schema import AddItemSchema, RestockItemSchema, UpdateItemSchema, ItemSchema, CategorySchema
 
 
-inventory_bp = Blueprint('inventory', __name__)
+inventory_bp = Blueprint('inventory', __name__, url_prefix='/inventory')
 
 
 @inventory_bp.route('/add_item', methods=['POST'])

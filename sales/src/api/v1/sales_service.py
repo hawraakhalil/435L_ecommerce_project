@@ -103,4 +103,13 @@ class SalesService:
         transactions = Transaction.query.filter(Transaction.customer_id == user_id).all()
         return [transaction.to_dict() for transaction in transactions]
 
+    def inquire_item(self, data):
+        item_id = data.get('item_id')
+        name = data.get('name')
+        item = self.get_item_by_id(item_id) if item_id else self.get_item_by_name(name)
+        return item.to_dict()
 
+    def get_all_items(self):
+        items = Item.query.all()
+        return [item.to_dict() for item in items]
+    

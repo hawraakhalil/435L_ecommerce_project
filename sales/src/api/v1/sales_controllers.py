@@ -10,7 +10,7 @@ from sales.src.api.v1.sales_service import SalesService
 from sales.errors import InsufficientStock, InsufficientBalance
 
 
-sales_bp = Blueprint('sales', __name__)
+sales_bp = Blueprint('sales', __name__, url_prefix='/sales')
 
 
 @sales_bp.route('/purchase', methods=['PUT'])
