@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from src.models.BaseModel import BaseModel
-from src.extensions import db
+from shared.db import db
 
 class Customer(BaseModel, db.Model):
     __tablename__ = 'customers'
@@ -19,6 +19,8 @@ class Customer(BaseModel, db.Model):
     last_logout = db.Column(db.DateTime, nullable=True)
 
     transactions = db.relationship('Transaction', back_populates='customer')
+    reviews = db.relationship('Review', back_populates='customer')
+    items = db.relationship('Item', secondary='transaction_items', back_populates='customers')
 
     def set_password(self, password: str) -> None:
         self.password = generate_password_hash(password)

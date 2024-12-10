@@ -1,4 +1,4 @@
-from src.extensions import db
+from shared.db import db
 from src.models.BaseModel import BaseModel
 
 class Transaction(BaseModel, db.Model):
@@ -8,7 +8,7 @@ class Transaction(BaseModel, db.Model):
     items_quantities = db.Column(db.JSON, nullable=False)
     total_price = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(255), nullable=False)
-
+    
     items = db.relationship('Item', secondary='transaction_items', back_populates='transactions')
     customer = db.relationship('Customer', back_populates='transactions')
 
@@ -16,6 +16,7 @@ class Transaction(BaseModel, db.Model):
         return {
             'id': self.id,
             'items': [item.to_dict() for item in self.items],
+            'customer': self.customer.username,
             'items_quantities': self.items_quantities,
             'total_price': self.total_price,
             'created_at': self.created_at

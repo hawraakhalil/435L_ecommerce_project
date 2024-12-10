@@ -3,46 +3,46 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from werkzeug.exceptions import NotFound
 from marshmallow import ValidationError
-from src.errors import AuthenticationError
+from admin.errors import AuthenticationError
 
-from src.extensions import db
-from customers.customers_schema import RegisterCustomerSchema, LoginCustomerSchema, UpdateCustomerSchema
-from customers.customers_service import CustomerService
-
-
-customers_bp = Blueprint('customers', __name__, url_prefix='/customers')
+from shared.db import db
+from admin.src.api.v1.admin_schema import RegisterAdminSchema, LoginAdminSchema, UpdateAdminSchema
+from admin.src.api.v1.admin_service import AdminService
 
 
-@customers_bp.route('/register_customer', methods=['POST'])
-def register_customer():
+admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+
+
+@admin_bp.route('/register_admin', methods=['POST'])
+def register_admin():
     data = request.get_json()
-    schema = RegisterCustomerSchema()
+    schema = RegisterAdminSchema()
     try:
         data = schema.load(data)
     except ValidationError as e:
-        return jsonify({'error': f'Validation error in register customer: {e.messages}'}), 400
+        return jsonify({'error': f'Validation error in register admin: {e.messages}'}), 400
     
-    service = CustomerService(db_session =db.session)
+    service = AdminService(db_session =db.session)
     try:
-        result = service.register_customer(data)
+        result = service.register_admin(data)
         return jsonify(result), 201
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-@customers_bp.route('/login_customer', methods=['POST'])
-def login_customer():
+@admin_bp.route('/login_admin', methods=['POST'])
+def login_admin():
     data = request.get_json()
-    schema = LoginCustomerSchema()
+    schema = LoginAdminSchema()
     try:
         data = schema.load(data)
     except ValidationError as e:
-        return jsonify({'error': f'Validation error in login customer: {e.messages}'}), 400
+        return jsonify({'error': f'Validation error in login admin: {e.messages}'}), 400
     
-    service = CustomerService(db_session=db.session)
+    service = AdminService(db_session=db.session)
     try:
-        result = service.login_customer(data)
+        result = service.login_admin(data)
         return jsonify(result), 200
     except AuthenticationError as e:
         return jsonify({'error': str(e)}), 403
@@ -51,47 +51,47 @@ def login_customer():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@customers_bp.route('/logout_customer', methods=['POST'])
+@admin_bp.route('/logout_admin', methods=['POST'])
 @jwt_required()
-def logout_customer():
-    customer_id = get_jwt_identity()
-    service = CustomerService(db_session=db.session)
+def logout_admin():
+    admin_id = get_jwt_identity()
+    service = AdminService(db_session=db.session)
     try:
-        result = service.logout_customer(customer_id)
+        result = service.logout_admin(admin_id)
         return jsonify(result), 200
     except NotFound as e:
         return jsonify({'error': str(e)}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@customers_bp.route('/update_customer', methods=['GET'])
+@admin_bp.route('/update_admin', methods=['GET'])
 @jwt_required()
-def update_customer():
+def update_admin():
     data = request.get_json()
-    schema = UpdateCustomerSchema()
+    schema = UpdateAdminSchema()
     try:
         data = schema.load(data)
     except ValidationError as e:
         return jsonify({'error': f'Validation error in update customer: {e.messages}'}), 400
     
-    customer_id = get_jwt_identity()
-    service = CustomerService(db_session=db.session)
+    admin_id = get_jwt_identity()
+    service = AdminService(db_session=db.session)
     try:
-        result = service.update_customer(customer_id, data)
+        result = service.update_admin(admin_id, data)
         return jsonify(result), 200
     except NotFound as e:
         return jsonify({'error': str(e)}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@customers_bp.route('/get_customer_info', methods=['GET'])
+@admin_bp.route('/get_admin_info', methods=['GET'])
 @jwt_required()
-def get_customer_info():
-    customer_id = get_jwt_identity()
-    service = CustomerService(db_session=db.session)
+def get_admin_info():
+    admin_id = get_jwt_identity()
+    service = AdminService(db_session=db.session)
     try:
-        customer = service.get_customer_info(customer_id)
-        return jsonify(customer.to_dict()), 200
+        admin = service.get_admin_info(admin_id)
+        return jsonify(admin.to_dict()), 200
     except NotFound as e:
         return jsonify({'error': str(e)}), 404
     except Exception as e:

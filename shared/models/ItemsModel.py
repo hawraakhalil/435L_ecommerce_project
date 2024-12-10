@@ -1,6 +1,5 @@
-from werkzeug.security import generate_password_hash, check_password_hash
 from src.models.BaseModel import BaseModel
-from src.extensions import db
+from shared.db import db
 
 class Item(BaseModel, db.Model):
     __tablename__ = 'items'
@@ -13,6 +12,7 @@ class Item(BaseModel, db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(255), nullable=False)
 
+    reviews = db.relationship('Review', back_populates='item')
     transactions = db.relationship('Transaction', secondary='transaction_items', back_populates='items')
 
     def to_dict(self):

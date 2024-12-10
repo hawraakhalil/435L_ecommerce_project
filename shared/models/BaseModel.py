@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declared_attr
-from src.extensions import db
+from shared.db import db
 from utils.utils import get_utc_now
 
 class BaseModel(object):
