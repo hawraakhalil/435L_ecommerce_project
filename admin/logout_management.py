@@ -1,14 +1,15 @@
 from flask import jsonify
-from src.extensions import db, jwt
-from src.api.v1.services.customers_service import CustomerService
+from admin.extensions import jwt
+from shared.db import db
+from admin.src.api.v1.admin_service import AdminService
 
 @jwt.token_in_blocklist_loader
 def is_token_revoked(jwt_header, jwt_payload):
-    customer_id = jwt_payload['sub']
-    customer_service = CustomerService(db.session)
-    customer = customer_service.get_customer_by_id(customer_id)
-    if customer.last_logout:
-        return jwt_payload['iat'] < customer.last_logout.timestamp()
+    admin_id = jwt_payload['sub']
+    admin_service = AdminService(db.session)
+    admin = admin_service.get_admin_by_id(admin_id)
+    if admin.last_logout:
+        return jwt_payload['iat'] < admin.last_logout.timestamp()
     return False
 
 @jwt.revoked_token_loader

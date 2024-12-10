@@ -3,11 +3,11 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from werkzeug.exceptions import NotFound
 from marshmallow import ValidationError
-from src.errors import AuthenticationError
+from customers.errors import AuthenticationError
 
-from src.extensions import db
-from customers.customers_schema import RegisterCustomerSchema, LoginCustomerSchema, UpdateCustomerSchema
-from customers.customers_service import CustomerService
+from customers.extensions import db
+from customers.src.api.v1.customers_schema import RegisterCustomerSchema, LoginCustomerSchema, UpdateCustomerSchema
+from customers.src.api.v1.customers_service import CustomerService
 
 
 customers_bp = Blueprint('customers', __name__, url_prefix='/customers')
@@ -90,10 +90,9 @@ def get_customer_info():
     customer_id = get_jwt_identity()
     service = CustomerService(db_session=db.session)
     try:
-        customer = service.get_customer_info(customer_id)
-        return jsonify(customer.to_dict()), 200
+        result = service.get_customer_info(customer_id)
+        return jsonify(result), 200
     except NotFound as e:
         return jsonify({'error': str(e)}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-

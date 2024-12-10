@@ -90,8 +90,8 @@ def get_admin_info():
     admin_id = get_jwt_identity()
     service = AdminService(db_session=db.session)
     try:
-        admin = service.get_admin_info(admin_id)
-        return jsonify(admin.to_dict()), 200
+        result = service.get_admin_info(admin_id)
+        return jsonify(result), 200
     except NotFound as e:
         return jsonify({'error': str(e)}), 404
     except Exception as e:

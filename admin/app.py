@@ -4,6 +4,7 @@ from shared.logger import logger
 from admin.src.api.v1.admin_controllers import admin_bp
 from admin.extensions import migrate, jwt, cors
 from admin.config import get_config
+from admin.logout_management import is_token_revoked, revoked_token_callback
 
 def create_app():
     app = Flask(__name__)

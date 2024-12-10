@@ -1,8 +1,8 @@
-from models.CustomersModel import Customer
 from flask_jwt_extended import create_access_token, create_refresh_token
-from src.errors import AuthenticationError
+from shared.models.CustomersModel import Customer
+from customers.errors import AuthenticationError
 from werkzeug.exceptions import NotFound
-from src.utils.utils import get_utc_now, format_phone
+from shared.utils.utils import get_utc_now, format_phone
 
 
 class CustomerService:
