@@ -11,19 +11,19 @@ class AdminService:
         self.db_session = db_session
 
     @staticmethod
-    def get_admins_by_username(username):
+    def get_admin_by_username(username):
         return Admin.query.filter(Admin.username == username).first()
 
     @staticmethod
-    def get_admins_by_email(email):
+    def get_admin_by_email(email):
         return Admin.query.filter(Admin.email == email).first()
     
     @staticmethod
-    def get_admins_by_phone(phone):
+    def get_admin_by_phone(phone):
         return Admin.query.filter(Admin.phone == phone).first()
     
     @staticmethod
-    def get_admins_by_id(admin_id):
+    def get_admin_by_id(admin_id):
         return Admin.query.filter(Admin.id == admin_id).first()
 
     def get_admin(self, identifier):

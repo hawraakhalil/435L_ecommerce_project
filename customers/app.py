@@ -1,30 +1,28 @@
-from flask import Flask
-from .src.api.v1.customers_controllers import customer_bp
-from extensions import jwt
+from flask import Flask, jsonify
+from shared.db import db
+from shared.logger import logger
+from customers.src.api.v1.customers_controllers import customers_bp
+from customers.extensions import migrate, jwt, cors
+from customers.config import get_config
+from customers.logout_management import is_token_revoked, revoked_token_callback
 
 def create_app():
     app = Flask(__name__)
-    app.register_blueprint(customer_bp, url_prefix="/customers")
+    app.config.from_object(get_config())
+    db.init_app(app)
+    migrate.init_app(app, db)
     jwt.init_app(app)
+    cors.init_app(app)
+
+    app.register_blueprint(customers_bp)
     return app
 
-if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True, host="0.0.0.0")
+app = create_app()
 
-
-    
-from flask import Flask
-from flask_migrate import Migrate
-from shared.db import db
-from shared.models import *  # Import all models
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://username:password@db_host:5432/ecommerce_db"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db.init_app(app)
-migrate = Migrate(app, db)
+@app.route('/')
+def index():
+    logger.info('Enter index')
+    return jsonify({'message': 'Customers API'}), 200
 
 if __name__ == '__main__':
-    app.run(port=5001)
+    app.run(host='127.0.0.1', port=5001, debug=True)

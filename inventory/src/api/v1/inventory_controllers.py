@@ -4,9 +4,9 @@ from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError
 from werkzeug.exceptions import NotFound
 
-from src.extensions import db
-from inventory.inventory_service import InventoryService
-from inventory.inventory_schema import AddItemSchema, RestockItemSchema, UpdateItemSchema, ItemSchema, CategorySchema
+from inventory.extensions import db
+from inventory.src.api.v1.inventory_service import InventoryService
+from inventory.src.api.v1.inventory_schema import AddItemSchema, RestockItemSchema, UpdateItemSchema, ItemSchema, CategorySchema
 
 
 inventory_bp = Blueprint('inventory', __name__)

@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from src.models.BaseModel import BaseModel
+from shared.models.BaseModel import BaseModel
 from shared.db import db
 
 class Customer(BaseModel, db.Model):

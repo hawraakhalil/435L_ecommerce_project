@@ -1,4 +1,4 @@
-from src.models.BaseModel import BaseModel
+from shared.models.BaseModel import BaseModel
 from shared.db import db
 
 class Item(BaseModel, db.Model):

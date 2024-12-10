@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from src.models.BaseModel import BaseModel
+from shared.models.BaseModel import BaseModel
 from shared.db import db
 
 class Admin(BaseModel, db.Model):
@@ -15,7 +15,6 @@ class Admin(BaseModel, db.Model):
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.String(255), nullable=False)
     marital_status = db.Column(db.String(255), nullable=False)
-    balance = db.Column(db.Integer, nullable=False, default=0)
     last_logout = db.Column(db.DateTime, nullable=True)
 
     def set_password(self, password: str) -> None:
@@ -35,6 +34,5 @@ class Admin(BaseModel, db.Model):
             'age': self.age,
             'gender': self.gender,
             'marital_status': self.marital_status,
-            'balance': self.balance,
             'created_at': self.created_at
         }

@@ -1,5 +1,5 @@
 from shared.db import db
-from src.models.BaseModel import BaseModel
+from shared.models.BaseModel import BaseModel
 
 class Transaction(BaseModel, db.Model):
     __tablename__ = 'transactions'

@@ -1,4 +1,4 @@
-from src.models.ItemsModel import Item
+from shared.models.ItemsModel import Item
 from werkzeug.exceptions import NotFound
 
 class InventoryService:

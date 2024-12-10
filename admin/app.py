@@ -22,7 +22,7 @@ app = create_app()
 @app.route('/')
 def index():
     logger.info('Enter index')
-    return jsonify({'message': 'Hello, World!'}), 200
+    return jsonify({'message': 'Admin API'}), 200
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
