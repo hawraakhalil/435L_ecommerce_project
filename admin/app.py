@@ -4,7 +4,6 @@ from shared.logger import logger
 from admin.src.api.v1.admin_controllers import admin_bp
 from admin.extensions import migrate, jwt, cors
 from admin.config import get_config
-from flask_jwt_extended import JWTManager
 from admin.logout_management import is_token_revoked, revoked_token_callback
 
 def create_app():
@@ -12,7 +11,7 @@ def create_app():
     app.config.from_object(get_config())
     db.init_app(app)
     migrate.init_app(app, db)
-    JWTManager(app)
+    jwt.init_app(app)
     cors.init_app(app)
 
     app.register_blueprint(admin_bp)

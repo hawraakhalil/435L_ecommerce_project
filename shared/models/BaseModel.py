@@ -1,6 +1,6 @@
 from sqlalchemy.ext.declarative import declared_attr
 from shared.db import db
-from utils.utils import get_utc_now
+from shared.utils.utils import get_utc_now
 
 class BaseModel(object):
     __abstract__ = True

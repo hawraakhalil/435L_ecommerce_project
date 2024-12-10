@@ -20,7 +20,7 @@ class Customer(BaseModel, db.Model):
 
     transactions = db.relationship('Transaction', back_populates='customer', cascade="all, delete-orphan")
     reviews = db.relationship('Review', back_populates='customer', cascade="all, delete-orphan")
-    items = db.relationship('Item', secondary='transaction_items', back_populates='customers', cascade="all, delete-orphan")
+    items = db.relationship('Item', back_populates='customer', cascade="all, delete-orphan")
 
     def set_password(self, password: str) -> None:
         self.password = generate_password_hash(password)
