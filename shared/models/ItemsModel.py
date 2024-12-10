@@ -12,8 +12,8 @@ class Item(BaseModel, db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(255), nullable=False)
 
-    reviews = db.relationship('Review', back_populates='item')
-    transactions = db.relationship('Transaction', secondary='transaction_items', back_populates='items')
+    reviews = db.relationship('Review', back_populates='item', cascade="all, delete-orphan")
+    transactions = db.relationship('Transaction', secondary='transaction_items', back_populates='items', cascade="all, delete-orphan")
 
     def to_dict(self):
         return {

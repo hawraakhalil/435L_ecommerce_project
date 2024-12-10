@@ -8,8 +8,8 @@ class Review(BaseModel, db.Model):
     review = db.Column(db.String(255), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
 
-    item = db.relationship('Item', back_populates='reviews')
-    customer = db.relationship('Customer', back_populates='reviews')
+    item = db.relationship('Item', back_populates='reviews', cascade="all, delete-orphan")
+    customer = db.relationship('Customer', back_populates='reviews', cascade="all, delete-orphan")
 
     def to_dict(self):
         return {

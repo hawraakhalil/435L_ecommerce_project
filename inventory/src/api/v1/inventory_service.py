@@ -66,10 +66,6 @@ class InventoryService:
         self.db_session.commit()
         return {'message': f'Item with id {item.id} updated successfully'}
 
-    @staticmethod
-    def get_items():
-        return {'items': [item.to_dict() for item in Item.query.all()]}
-
     def delete_item(self, data):
         item_id = data.get('item_id')
         name = data.get('name')
@@ -78,9 +74,11 @@ class InventoryService:
         self.db_session.commit()
         return {'message': f'Item with id {item.id} deleted successfully'}
     
+    @staticmethod
+    def get_items():
+        return {'items': [item.to_dict() for item in Item.query.all()]}
+
     def get_items_by_category(self, data):
         category = data.get('category')
         items = Item.query.filter_by(category=category).all()
         return {'items': [item.to_dict() for item in items]}
-
-

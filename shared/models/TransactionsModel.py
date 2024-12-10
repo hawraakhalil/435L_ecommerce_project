@@ -9,8 +9,8 @@ class Transaction(BaseModel, db.Model):
     total_price = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(255), nullable=False)
     
-    items = db.relationship('Item', secondary='transaction_items', back_populates='transactions')
-    customer = db.relationship('Customer', back_populates='transactions')
+    items = db.relationship('Item', secondary='transaction_items', back_populates='transactions', cascade="all, delete-orphan")
+    customer = db.relationship('Customer', back_populates='transactions', cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
