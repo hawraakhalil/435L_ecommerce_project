@@ -1,0 +1,76 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  admin_app:
+    build:
+      context: .
+      dockerfile: ./admin/Dockerfile
+    env_file:
+      - ./admin/.env
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+
+  customer_app:
+    build:
+      context: .
+      dockerfile: ./customers/Dockerfile
+    env_file:
+      - ./customers/.env
+    depends_on:
+      - db
+    ports:
+      - "5001:5001"
+
+  inventory_app:
+    build:
+      context: .
+      dockerfile: ./inventory/Dockerfile
+    env_file:
+      - ./inventory/.env
+    depends_on:
+      - db
+    ports:
+      - "5002:5002"
+
+  reviews_app:
+    build:
+      context: .
+      dockerfile: ./reviews/Dockerfile
+    env_file:
+      - ./reviews/.env
+    depends_on:
+      - db
+    ports:
+      - "5003:5003"
+
+  sales_app:
+    build:
+      context: .
+      dockerfile: ./sales/Dockerfile
+    env_file:
+      - ./sales/.env
+    depends_on:
+      - db
+    ports:
+      - "5004:5004"
+
+volumes:
+  db_data:
