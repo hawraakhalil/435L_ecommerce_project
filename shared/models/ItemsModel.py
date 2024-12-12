@@ -1,12 +1,11 @@
 from shared.models.BaseModel import BaseModel
-from sqlalchemy import ForeignKey
 from shared.db import db
 
 class Item(BaseModel, db.Model):
     __tablename__ = 'items'
 
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, ForeignKey('customers.id'), nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     name = db.Column(db.String(255), nullable=False, unique=True)
     category = db.Column(db.String(255), nullable=False)
     price_per_unit = db.Column(db.Float, nullable=False)

@@ -1,5 +1,4 @@
 from shared.models.BaseModel import BaseModel
-from sqlalchemy.sql.schema import ForeignKey
 from shared.db import db
 
 class Review(BaseModel, db.Model):

@@ -11,7 +11,7 @@ class Transaction(BaseModel, db.Model):
     lbp_total_price = db.Column(db.Float, nullable=False)
     usd_total_price = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(255), nullable=False, default='completed')
-    
+
     item = db.relationship('Item', back_populates='transactions')
     customer = db.relationship('Customer', back_populates='transactions')
 
