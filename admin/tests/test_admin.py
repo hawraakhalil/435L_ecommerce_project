@@ -1,21 +1,16 @@
 import pytest
-from flask import Flask
+import os
 from flask_jwt_extended import create_access_token
-from admin.src.api.v1.controllers.admin_controllers import admin_bp
-from shared.db import db
+from admin.src.extensions import db
 from admin.src.model.AdminsModel import Admin
-from admin.config import get_config
-from flask_jwt_extended import JWTManager
-from admin.app import create_app 
+from admin.app import create_app
 
 @pytest.fixture
 def app():
+    os.environ['FLASK_ENV'] = 'testing'
     app = create_app()
-    app.config['TESTING'] = True
-    app.config['JWT_SECRET_KEY'] = 'test-secret-key'
-    JWTManager(app)  # Initialize JWTManager for tests
     with app.app_context():
-        db.create_all()  # Create database tables for testing
+        db.create_all()
     yield app
     with app.app_context():
         db.session.remove()
@@ -41,7 +36,7 @@ def admin_token(app):
         admin.set_password('password123')
         db.session.add(admin)
         db.session.commit()
-        token = create_access_token(identity=str(admin.id))
+        token = create_access_token(identity=admin.username)
         return token
 
 def test_register_admin(client):
@@ -86,14 +81,55 @@ def test_update_admin(client, admin_token):
 def test_logout_admin(client, admin_token):
     headers = {"Authorization": f"Bearer {admin_token}"}
     response = client.delete('/admin/logout_admin', headers=headers)
-    print(response.json)
     assert response.status_code == 200
     assert response.json['message'] == "Admin logged out successfully"
 
 def test_get_admin_info(client, admin_token):
     headers = {"Authorization": f"Bearer {admin_token}"}
-    response = client.post('/admin/get_admin_info', headers=headers)
+    response = client.get('/admin/get_admin_info', headers=headers)
     print(response.json)
     assert response.status_code == 200
     assert "username" in response.json
     assert response.json["username"] == "testadmin"
+
+
+@pytest.mark.parametrize("duplicate_field,value", [
+    ("username", "testadmin"),
+    ("email", "admin@test.com"),
+    ("phone", "12345678")
+])
+def test_register_admin_duplicate_fields(client, admin_token, duplicate_field, value):
+    payload = {
+        "first_name": "John",
+        "last_name": "Doe",
+        "username": "uniqueuser",
+        "password": "password123",
+        "email": "unique@example.com",
+        "phone": "87654321",
+        "age": 25,
+        "gender": "male",
+        "marital_status": "single"
+    }
+    payload[duplicate_field] = value
+    
+    response = client.put('/admin/register_admin', json=payload)
+    assert response.status_code == 408
+    assert 'error' in response.json
+
+def test_get_admin_info_nonexistent(client, admin_token):
+    headers = {"Authorization": f"Bearer {admin_token}"}
+    with client.application.app_context():
+        admin = Admin.query.filter_by(username='testadmin').first()
+        if admin:
+            db.session.delete(admin)
+            db.session.commit()
+
+    response = client.get('/admin/get_admin_info', headers=headers)
+    assert response.status_code == 404
+    assert 'error' in response.json
+
+def test_get_admin_info_no_token(client):
+    response = client.get('/admin/get_admin_info')
+    assert response.status_code == 401
+    assert 'msg' in response.json
+    assert "missing authorization header" in response.json['msg'].lower()

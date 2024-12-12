@@ -7,7 +7,7 @@ def is_token_revoked(jwt_header, jwt_payload):
     admin_id = jwt_payload['sub']
     admin_service = AdminService(db_session=db.session)
     admin = admin_service.get_admin_by_id(admin_id)
-    if admin.last_logout:
+    if admin and admin.last_logout:
         return jwt_payload['iat'] < admin.last_logout.timestamp()
     return False
 
