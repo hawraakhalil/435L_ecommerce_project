@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from marshmallow import ValidationError
 from werkzeug.exceptions import NotFound
@@ -22,9 +22,10 @@ def add_review():
     except ValidationError as e:
         return jsonify({'error': f'Validation error in add review: {e.messages}'}), 400
     
+    customer_id = get_jwt_identity()
     service = ReviewsService(db_session=db.session)
     try:
-        result = service.add_review(data)
+        result = service.add_review(data, customer_id)
         return jsonify(result), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -39,9 +40,10 @@ def update_review():
     except ValidationError as e:
         return jsonify({'error': f'Validation error in update review: {e.messages}'}), 400
     
+    customer_id = get_jwt_identity()
     service = ReviewsService(db_session=db.session)
     try:
-        result = service.update_review(data)
+        result = service.update_review(data, customer_id)
         return jsonify(result), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -56,9 +58,10 @@ def delete_review():
     except ValidationError as e:
         return jsonify({'error': f'Validation error in delete review: {e.messages}'}), 400
     
+    customer_id = get_jwt_identity()
     service = ReviewsService(db_session=db.session)
     try:
-        result = service.delete_review(data)
+        result = service.delete_review(data, customer_id)
         return jsonify(result), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -93,6 +96,15 @@ def get_item_reviews():
     service = ReviewsService(db_session=db.session)
     try:
         result = service.get_item_reviews(data)
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@reviews_bp.route('/get_all_reviews', methods=['GET'])
+@jwt_required()
+def get_all_reviews():
+    try:
+        result = ReviewsService.get_all_reviews()
         return jsonify(result), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500

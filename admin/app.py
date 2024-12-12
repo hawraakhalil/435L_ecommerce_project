@@ -1,8 +1,8 @@
 from flask import Flask, jsonify
-from shared.db import db
+from shared.db import db, migrate
 from shared.logger import logger
 from admin.src.api.v1.admin_controllers import admin_bp
-from admin.extensions import migrate, jwt, cors
+from admin.extensions import jwt, cors
 from admin.config import get_config
 from admin.logout_management import is_token_revoked, revoked_token_callback
 

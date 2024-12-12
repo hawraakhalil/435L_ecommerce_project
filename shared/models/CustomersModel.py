@@ -42,3 +42,11 @@ class Customer(BaseModel, db.Model):
             'balance': self.balance,
             'created_at': self.created_at
         }
+    
+    def to_dict_for_reviews(self):
+        return {
+            'username': self.username,
+            'email': self.email,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+        }
