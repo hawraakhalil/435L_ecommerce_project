@@ -2,8 +2,8 @@ from flask import Flask, jsonify
 from shared.db import db, migrate
 from shared.logger import logger
 from inventory.src.api.v1.inventory_controllers import inventory_bp
-from inventory.extensions import jwt, cors
-from inventory.config import get_config
+from inventory.src.extensions import jwt, cors
+from inventory.src.config import get_config
 
 
 def create_app():

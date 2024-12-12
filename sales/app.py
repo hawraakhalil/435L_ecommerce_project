@@ -2,8 +2,8 @@ from flask import Flask, jsonify
 from shared.db import db, migrate
 from shared.logger import logger
 from sales.src.api.v1.sales_controllers import sales_bp
-from sales.extensions import jwt, cors
-from sales.config import get_config
+from sales.src.extensions import jwt, cors
+from sales.src.config import get_config
 
 def create_app():
     app = Flask(__name__)

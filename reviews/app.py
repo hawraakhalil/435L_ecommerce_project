@@ -1,8 +1,8 @@
 from flask import Flask, jsonify
 from shared.db import db, migrate
 from shared.logger import logger
-from reviews.extensions import jwt, cors
-from reviews.config import get_config
+from reviews.src.extensions import jwt, cors
+from reviews.src.config import get_config
 
 def create_app():
     app = Flask(__name__)

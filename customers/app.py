@@ -2,9 +2,9 @@ from flask import Flask, jsonify
 from shared.db import db, migrate
 from shared.logger import logger
 from customers.src.api.v1.customers_controllers import customers_bp
-from customers.extensions import jwt, cors
-from customers.config import get_config
-from customers.logout_management import is_token_revoked, revoked_token_callback
+from customers.src.extensions import jwt, cors
+from customers.src.config import get_config
+from customers.src.logout_management import is_token_revoked, revoked_token_callback
 
 def create_app():
     app = Flask(__name__)
