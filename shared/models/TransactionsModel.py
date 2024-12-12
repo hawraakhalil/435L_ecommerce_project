@@ -8,8 +8,9 @@ class Transaction(BaseModel, db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     item_id = db.Column(db.Integer, db.ForeignKey('items.id'), nullable=False)
     items_quantities = db.Column(db.JSON, nullable=False)
-    total_price = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String(255), nullable=False)
+    lbp_total_price = db.Column(db.Float, nullable=False)
+    usd_total_price = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(255), nullable=False, default='completed')
     
     item = db.relationship('Item', back_populates='transactions')
     customer = db.relationship('Customer', back_populates='transactions')
@@ -20,6 +21,7 @@ class Transaction(BaseModel, db.Model):
             'item': self.item.to_dict(),
             'customer': self.customer.username,
             'items_quantities': self.items_quantities,
-            'total_price': self.total_price,
+            'lbp_total_price': self.lbp_total_price,
+            'usd_total_price': self.usd_total_price,
             'created_at': self.created_at
         }

@@ -31,6 +31,12 @@ class CustomerService:
             raise NotFound(f'Customer with identifier {identifier} not found')
         return customer
     
+    def is_customer_banned(customer_id):
+        customer = Customer.query.filter(Customer.id == customer_id).first()
+        if not customer:
+            return True
+        return customer.is_banned
+    
     def register_customer(self, data):
         first_name = data.get('first_name')
         last_name = data.get('last_name')

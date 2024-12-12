@@ -4,6 +4,8 @@ from shared.logger import logger
 from sales.src.api.v1.sales_controllers import sales_bp
 from sales.src.extensions import jwt, cors
 from sales.src.config import get_config
+from sales.src.token_management import is_token_revoked, revoked_token_callback
+
 
 def create_app():
     app = Flask(__name__)
@@ -24,4 +26,4 @@ def index():
     return jsonify({'message': 'Sales API'}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5003, debug=True)
+    app.run(host='0.0.0.0', port=5004, debug=True)

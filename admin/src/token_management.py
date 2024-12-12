@@ -1,5 +1,5 @@
 from flask import jsonify
-from admin.extensions import jwt
+from admin.src.extensions import jwt
 from shared.db import db
 from admin.src.api.v1.services.admin_service import AdminService
 

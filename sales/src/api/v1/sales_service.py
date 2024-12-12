@@ -43,7 +43,8 @@ class SalesService:
 
         items = []
         items_quantities = []
-        total_price = 0
+        total_lbp_price = 0
+        total_usd_price = 0
 
         for index in range(len(item_ids_or_names)):
             item_id_or_name = item_ids_or_names[index]
@@ -56,20 +57,40 @@ class SalesService:
             if item.quantity < quantity:
                 raise InsufficientStock(f'Item {item.id} with name {item.name} has only {item.quantity} left in stock')
             
-            total_price += item.price_per_unit * quantity
+            if item.currency == 'LBP':
+                total_lbp_price += item.price_per_unit * quantity
+            else: 
+                total_usd_price += item.price_per_unit * quantity
 
             items.append(item)
             items_quantities.append(quantity)
 
-        if customer.balance < total_price:
-            raise InsufficientBalance(f'Customer {customer.id} has only {customer.balance} in balance')
+        if customer.lbp_balance < total_lbp_price:
+            raise InsufficientBalance(
+                f'Customer {customer.id} has insufficient LBP balance. '
+                f'Required: {total_lbp_price}, Available: {customer.lbp_balance}'
+            )
 
-        customer.balance -= total_price
+        if customer.usd_balance < total_usd_price:
+            raise InsufficientBalance(
+                f'Customer {customer.id} has insufficient USD balance. '
+                f'Required: {total_usd_price}, Available: {customer.usd_balance}'
+            )
+
+        customer.lbp_balance -= total_lbp_price
+        customer.usd_balance -= total_usd_price
 
         for item, quantity in zip(items, items_quantities):
             item.quantity -= quantity
 
-        transaction = Transaction(items_quantities=items_quantities, total_price=total_price, items=items, customer=customer, status='completed')
+        transaction = Transaction(
+            items_quantities=items_quantities,
+            lbp_total_price=total_lbp_price,
+            usd_total_price=total_usd_price,
+            items=items,
+            customer=customer,
+        )
+        
         self.db_session.add(transaction)
         self.db_session.commit()
         return transaction.to_dict()
@@ -88,7 +109,8 @@ class SalesService:
         if transaction.created_at < datetime.now() - timedelta(days=10):
             raise BadRequest(f'Transaction with id {transaction_id} is older than 10 days and cannot be reversed')
 
-        customer.balance += transaction.total_price
+        customer.lbp_balance += transaction.lbp_total_price
+        customer.usd_balance += transaction.usd_total_price
 
         for item, quantity in zip(transaction.items, transaction.items_quantities):
             item.quantity += quantity
@@ -110,4 +132,3 @@ class SalesService:
     def get_all_items(self):
         items = Item.query.all()
         return [item.to_dict() for item in items]
-    

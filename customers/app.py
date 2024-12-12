@@ -4,7 +4,7 @@ from shared.logger import logger
 from customers.src.api.v1.customers_controllers import customers_bp
 from customers.src.extensions import jwt, cors
 from customers.src.config import get_config
-from customers.src.logout_management import is_token_revoked, revoked_token_callback
+from customers.src.token_management import is_token_revoked, revoked_token_callback
 
 def create_app():
     app = Flask(__name__)

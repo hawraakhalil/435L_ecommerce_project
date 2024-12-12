@@ -59,8 +59,8 @@ class AdminService:
         self.db_session.add(admin)
         self.db_session.commit()
         
-        access_token = create_access_token(identity=admin.id)
-        refresh_token = create_refresh_token(identity=admin.id)
+        access_token = create_access_token(identity=str(admin.id))
+        refresh_token = create_refresh_token(identity=str(admin.id))
 
         return {'access': access_token, 'refresh': refresh_token}
     
@@ -73,8 +73,8 @@ class AdminService:
         if not admin.check_password(password):
             raise AuthenticationError(f'Invalid password for admin with username or email: {identifier}')
 
-        access_token = create_access_token(identity=admin.id)
-        refresh_token = create_refresh_token(identity=admin.id)
+        access_token = create_access_token(identity=str(admin.id))
+        refresh_token = create_refresh_token(identity=str(admin.id))
 
         return {'access': access_token, 'refresh': refresh_token}
 

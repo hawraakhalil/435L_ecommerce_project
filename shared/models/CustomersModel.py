@@ -15,7 +15,9 @@ class Customer(BaseModel, db.Model):
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.String(255), nullable=False)
     marital_status = db.Column(db.String(255), nullable=False)
-    balance = db.Column(db.Integer, nullable=False, default=0)
+    lbp_balance = db.Column(db.Float, nullable=False, default=0)
+    usd_balance = db.Column(db.Float, nullable=False, default=0)
+    status = db.Column(db.String(255), nullable=False, default='active')
     last_logout = db.Column(db.DateTime, nullable=True)
 
     transactions = db.relationship('Transaction', back_populates='customer', cascade="all, delete-orphan")
@@ -39,7 +41,9 @@ class Customer(BaseModel, db.Model):
             'age': self.age,
             'gender': self.gender,
             'marital_status': self.marital_status,
-            'balance': self.balance,
+            'lbp_balance': self.lbp_balance,
+            'usd_balance': self.usd_balance,
+            'status': self.status,
             'created_at': self.created_at
         }
     

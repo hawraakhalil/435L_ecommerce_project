@@ -54,7 +54,7 @@ def login_admin():
 @admin_bp.route('/logout_admin', methods=['DELETE'])
 @jwt_required()
 def logout_admin():
-    admin_id = get_jwt_identity()
+    admin_id = int(get_jwt_identity())
     service = AdminService(db_session=db.session)
     try:
         result = service.logout_admin(admin_id)
@@ -74,7 +74,7 @@ def update_admin():
     except ValidationError as e:
         return jsonify({'error': f'Validation error in update customer: {e.messages}'}), 400
     
-    admin_id = get_jwt_identity()
+    admin_id = int(get_jwt_identity())
     service = AdminService(db_session=db.session)
     try:
         result = service.update_admin(admin_id, data)
@@ -87,7 +87,7 @@ def update_admin():
 @admin_bp.route('/get_admin_info', methods=['POST'])
 @jwt_required()
 def get_admin_info():
-    admin_id = get_jwt_identity()
+    admin_id = int(get_jwt_identity())
     service = AdminService(db_session=db.session)
     try:
         result = service.get_admin_info(admin_id)
