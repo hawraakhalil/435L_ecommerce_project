@@ -4,8 +4,11 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y gcc && rm -rf /var/lib/apt/lists/*
 
-COPY ./customers ./
-COPY ./shared ./shared
+COPY ./shared /app/shared
+
+COPY ./customers /app/customers
+
+ENV PIP_DEFAULT_TIMEOUT=100
 
 RUN pip install --no-cache-dir -r requirements.txt
 

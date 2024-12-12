@@ -21,56 +21,91 @@ services:
     build:
       context: .
       dockerfile: ./admin/Dockerfile
+    environment:
+      - FLASK_APP=admin/src/app.py
+      - FLASK_ENV=development
+      - PYTHONPATH=/app
     env_file:
       - ./admin/.env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "5000:5000"
+    volumes:
+      - ./shared:/app/shared
 
   customer_app:
     build:
       context: .
       dockerfile: ./customers/Dockerfile
+    environment:
+      - FLASK_APP=customers/src/app.py
+      - FLASK_ENV=development
+      - PYTHONPATH=/app
     env_file:
       - ./customers/.env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "5001:5001"
+    volumes:
+      - ./shared:/app/shared
 
   inventory_app:
     build:
       context: .
       dockerfile: ./inventory/Dockerfile
+    environment:
+      - FLASK_APP=inventory/src/app.py
+      - FLASK_ENV=development
+      - PYTHONPATH=/app
     env_file:
       - ./inventory/.env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "5002:5002"
+    volumes:
+      - ./shared:/app/shared
 
   reviews_app:
     build:
       context: .
       dockerfile: ./reviews/Dockerfile
+    environment:
+      - FLASK_APP=reviews/src/app.py
+      - FLASK_ENV=development
+      - PYTHONPATH=/app
     env_file:
       - ./reviews/.env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "5003:5003"
+    volumes:
+      - ./shared:/app/shared
 
   sales_app:
     build:
       context: .
       dockerfile: ./sales/Dockerfile
+    environment:
+      - FLASK_APP=sales/src/app.py
+      - FLASK_ENV=development
+      - PYTHONPATH=/app
     env_file:
       - ./sales/.env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "5004:5004"
+    volumes:
+      - ./shared:/app/shared
 
 volumes:
   db_data:
