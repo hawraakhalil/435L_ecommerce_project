@@ -1,11 +1,15 @@
 from flask import Flask, jsonify
-from shared.db import db, migrate
-from shared.logger import logger
-from admin.src.api.v1.controllers.admin_controllers import admin_bp
-from admin.src.api.v1.services.customer_management_service import customer_management_service
-from admin.src.extensions import jwt, cors
+from admin.src.utils.logger import logger
+from admin.src.extensions import db, migrate, jwt, cors
 from admin.src.config import get_config
 from admin.src.token_management import is_token_revoked, revoked_token_callback
+
+from admin.src.model.AdminsModel import Admin
+from admin.src.model.CustomersModel import Customer
+from admin.src.model.TransactionsModel import Transaction
+
+from admin.src.api.v1.controllers.admin_controllers import admin_bp
+from admin.src.api.v1.controllers.customer_management_controllers import customer_management_bp
 
 def create_app():
     app = Flask(__name__)
@@ -16,7 +20,7 @@ def create_app():
     cors.init_app(app)
 
     app.register_blueprint(admin_bp)
-    app.register_blueprint(customer_management_service)
+    app.register_blueprint(customer_management_bp)
     return app
 
 app = create_app()

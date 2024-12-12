@@ -15,8 +15,8 @@ class Transaction(BaseModel, db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'item': self.item.to_dict(),
-            'customer': self.customer.username,
+            'items': self.items,
+            'customer_id': self.customer_id,
             'items_quantities': self.items_quantities,
             'lbp_total_price': self.lbp_total_price,
             'usd_total_price': self.usd_total_price,

@@ -1,11 +1,14 @@
 from flask import jsonify, Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadRequest
 from marshmallow import ValidationError
-from customers.src.errors import AuthenticationError
 
-from shared.db import db
+from customers.src.extensions import db
+from customers.src.utils.logger import logger
+from customers.src.utils.errors import AuthenticationError
+
+
 from customers.src.api.v1.customers_schema import RegisterCustomerSchema, LoginCustomerSchema, UpdateCustomerSchema
 from customers.src.api.v1.customers_service import CustomerService
 
@@ -26,7 +29,7 @@ def register_customer():
     try:
         result = service.register_customer(data)
         return jsonify(result), 201
-    except ValueError as e:
+    except BadRequest as e:
         return jsonify({'error': str(e)}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -54,10 +57,10 @@ def login_customer():
 @customers_bp.route('/logout_customer', methods=['DELETE'])
 @jwt_required()
 def logout_customer():
-    customer_id = get_jwt_identity()
+    customer_username = get_jwt_identity()
     service = CustomerService(db_session=db.session)
     try:
-        result = service.logout_customer(customer_id)
+        result = service.logout_customer(customer_username)
         return jsonify(result), 200
     except NotFound as e:
         return jsonify({'error': str(e)}), 404
@@ -74,10 +77,10 @@ def update_customer():
     except ValidationError as e:
         return jsonify({'error': f'Validation error in update customer: {e.messages}'}), 400
     
-    customer_id = get_jwt_identity()
+    customer_username = get_jwt_identity()
     service = CustomerService(db_session=db.session)
     try:
-        result = service.update_customer(customer_id, data)
+        result = service.update_customer(customer_username, data)
         return jsonify(result), 200
     except NotFound as e:
         return jsonify({'error': str(e)}), 404
@@ -87,10 +90,10 @@ def update_customer():
 @customers_bp.route('/get_customer_info', methods=['POST'])
 @jwt_required()
 def get_customer_info():
-    customer_id = get_jwt_identity()
+    customer_username = get_jwt_identity()
     service = CustomerService(db_session=db.session)
     try:
-        result = service.get_customer_info(customer_id)
+        result = service.get_customer_info(customer_username)
         return jsonify(result), 200
     except NotFound as e:
         return jsonify({'error': str(e)}), 404

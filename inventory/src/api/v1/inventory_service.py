@@ -1,5 +1,6 @@
-from shared.models.ItemsModel import Item
 from werkzeug.exceptions import NotFound
+from inventory.src.model.ItemsModel import Item
+
 
 class InventoryService:
     def __init__(self, db_session):

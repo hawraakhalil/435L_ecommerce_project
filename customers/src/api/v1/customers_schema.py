@@ -11,7 +11,7 @@ class RegisterCustomerSchema(Schema):
         validate=[
         validate.Length(min=8, max=8),
         validate.Regexp(r'^\d{8}$')
-    ]
+        ]
     )
     age = fields.Integer(required=True, validate=validate.Range(min=18, max=150))
     gender = fields.String(required=True, validate=validate.OneOf(['male', 'female', 'other']))
@@ -28,7 +28,8 @@ class UpdateCustomerSchema(Schema):
         validate=[
         validate.Length(min=8, max=8),
         validate.Regexp(r'^\d{8}$')
-    ])
+        ]
+    )
     age = fields.Integer(validate=validate.Range(min=18, max=150))
     gender = fields.String(validate=validate.OneOf(['male', 'female', 'other']))
     marital_status = fields.String(validate=validate.OneOf(['single', 'married', 'divorced', 'widowed']))

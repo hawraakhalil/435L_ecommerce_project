@@ -3,7 +3,7 @@ from flask import Flask
 from flask_jwt_extended import create_access_token
 from admin.src.api.v1.controllers.admin_controllers import admin_bp
 from shared.db import db
-from shared.models.AdminsModel import Admin
+from admin.src.model.AdminsModel import Admin
 from admin.config import get_config
 from flask_jwt_extended import JWTManager
 from admin.app import create_app 

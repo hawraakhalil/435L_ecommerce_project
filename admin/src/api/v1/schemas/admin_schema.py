@@ -28,8 +28,8 @@ class UpdateAdminSchema(Schema):
     validate=[
         validate.Length(equal=8),
         validate.Regexp(r'^\d{8}$')
-    ]
-)
+        ]
+    )
     age = fields.Integer(validate=validate.Range(min=18, max=150))
     gender = fields.String(validate=validate.OneOf(['male', 'female', 'other']))
     marital_status = fields.String(validate=validate.OneOf(['single', 'married', 'divorced', 'widowed']))

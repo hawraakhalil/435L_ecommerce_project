@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
-
 from marshmallow import ValidationError
 from werkzeug.exceptions import NotFound
 
-from shared.db import db
+from inventory.src.extensions import db
+
 from inventory.src.api.v1.inventory_service import InventoryService
 from inventory.src.api.v1.inventory_schema import AddItemSchema, RestockItemSchema, UpdateItemSchema, ItemSchema, CategorySchema
 

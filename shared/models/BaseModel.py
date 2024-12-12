@@ -7,7 +7,7 @@ class BaseModel(object):
 
     @declared_attr
     def created_at(cls):
-        return db.Column(db.DateTime, default=get_utc_now, nullable=False)
+        return 
 
     @declared_attr
     def updated_at(cls):

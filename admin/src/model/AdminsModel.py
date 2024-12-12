@@ -1,8 +1,8 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from shared.models.BaseModel import BaseModel
-from shared.db import db
+from admin.src.extensions import db
+from admin.src.utils.utils import get_utc_now
 
-class Admin(BaseModel, db.Model):
+class Admin(db.Model):
     __tablename__ = 'admins'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -16,6 +16,8 @@ class Admin(BaseModel, db.Model):
     gender = db.Column(db.String(255), nullable=False)
     marital_status = db.Column(db.String(255), nullable=False)
     last_logout = db.Column(db.DateTime, nullable=True)
+
+    created_at = db.Column(db.DateTime, default=get_utc_now, nullable=False)
 
     def set_password(self, password: str) -> None:
         self.password = generate_password_hash(password)
