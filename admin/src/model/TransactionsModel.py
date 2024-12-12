@@ -1,7 +1,6 @@
-from shared.db import db
-from shared.models.BaseModel import BaseModel
+from admin.src.extensions import db
 
-class Transaction(BaseModel, db.Model):
+class Transaction(db.Model):
     __tablename__ = 'transactions'
 
     id = db.Column(db.Integer, primary_key=True)
