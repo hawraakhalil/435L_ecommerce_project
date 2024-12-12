@@ -1,7 +1,6 @@
-from shared.models.BaseModel import BaseModel
-from shared.db import db
+from reviews.src.extensions import db
 
-class Item(BaseModel, db.Model):
+class Item(db.Model):
     __tablename__ = 'items'
 
     id = db.Column(db.Integer, primary_key=True)

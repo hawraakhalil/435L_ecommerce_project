@@ -1,10 +1,9 @@
 from flask import Flask, jsonify
-from shared.db import db, migrate
-from shared.logger import logger
-from reviews.src.api.v1.reviews_controllers import reviews_bp
-from reviews.src.extensions import jwt, cors
+from reviews.src.extensions import db, migrate, jwt, cors
 from reviews.src.config import get_config
 from reviews.src.token_management import is_token_revoked, revoked_token_callback
+from reviews.src.api.v1.reviews_controllers import reviews_bp
+from reviews.src.utils.logger import logger
 
 
 def create_app():

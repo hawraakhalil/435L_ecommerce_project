@@ -1,8 +1,7 @@
 from flask import Flask, jsonify
-from shared.db import db, migrate
-from shared.logger import logger
+from sales.src.utils.logger import logger
 from sales.src.api.v1.sales_controllers import sales_bp
-from sales.src.extensions import jwt, cors
+from sales.src.extensions import db, migrate, jwt, cors
 from sales.src.config import get_config
 from sales.src.token_management import is_token_revoked, revoked_token_callback
 

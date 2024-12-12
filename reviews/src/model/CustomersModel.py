@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from admin.src.extensions import db
-from admin.src.utils.utils import get_utc_now
+from reviews.src.extensions import db
+from reviews.src.utils.utils import get_utc_now
 
 class Customer(db.Model):
     __tablename__ = 'customers'
@@ -19,7 +19,7 @@ class Customer(db.Model):
     usd_balance = db.Column(db.Float, nullable=False, default=0)
     status = db.Column(db.String(255), nullable=False, default='active')
     last_logout = db.Column(db.DateTime, nullable=True)
-    items = db.Column(db.JSON, nullable=False)
+    items = db.Column(db.JSON, nullable=False, default=[])
 
     created_at = db.Column(db.DateTime, default=get_utc_now, nullable=False)
 

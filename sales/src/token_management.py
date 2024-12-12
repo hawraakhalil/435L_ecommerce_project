@@ -1,11 +1,11 @@
 from flask import jsonify
-from shared.models.CustomersModel import Customer
+from sales.src.model.CustomersModel import Customer
 from sales.src.extensions import jwt
 
 @jwt.token_in_blocklist_loader
 def is_token_revoked(jwt_header, jwt_payload):
-    customer_id = int(jwt_payload['sub'])
-    customer = Customer.query.filter(Customer.id == customer_id).first()
+    customer_username = jwt_payload['sub']
+    customer = Customer.query.filter(Customer.username == customer_username).first()
     if customer and customer.last_logout and customer.status == 'active':
         return jwt_payload['iat'] < customer.last_logout.timestamp()
     return False

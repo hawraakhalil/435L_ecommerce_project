@@ -1,8 +1,8 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from shared.models.BaseModel import BaseModel
-from shared.db import db
+from sales.src.extensions import db
+from sales.src.utils.utils import get_utc_now
 
-class Customer(BaseModel, db.Model):
+class Customer(db.Model):
     __tablename__ = 'customers'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -11,7 +11,7 @@ class Customer(BaseModel, db.Model):
     password = db.Column(db.String(255), nullable=False, default='')
     first_name = db.Column(db.String(255), nullable=False)
     last_name = db.Column(db.String(255), nullable=False)
-    phone = db.Column(db.String(255), nullable=False)
+    phone = db.Column(db.String(255), nullable=False, unique=True)
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.String(255), nullable=False)
     marital_status = db.Column(db.String(255), nullable=False)
@@ -19,10 +19,9 @@ class Customer(BaseModel, db.Model):
     usd_balance = db.Column(db.Float, nullable=False, default=0)
     status = db.Column(db.String(255), nullable=False, default='active')
     last_logout = db.Column(db.DateTime, nullable=True)
+    items = db.Column(db.JSON, nullable=False, default=[])
 
-    transactions = db.relationship('Transaction', back_populates='customer', cascade="all, delete-orphan")
-    reviews = db.relationship('Review', back_populates='customer', cascade="all, delete-orphan")
-    items = db.relationship('Item', back_populates='customer', cascade="all, delete-orphan")
+    created_at = db.Column(db.DateTime, default=get_utc_now, nullable=False)
 
     def set_password(self, password: str) -> None:
         self.password = generate_password_hash(password)
@@ -45,12 +44,4 @@ class Customer(BaseModel, db.Model):
             'usd_balance': self.usd_balance,
             'status': self.status,
             'created_at': self.created_at
-        }
-
-    def to_dict_for_reviews(self):
-        return {
-            'username': self.username,
-            'email': self.email,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
         }

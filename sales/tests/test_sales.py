@@ -5,7 +5,7 @@ from sales.src.api.v1.sales_service import SalesService
 from shared.models.CustomersModel import Customer
 from shared.models.ItemsModel import Item
 from shared.models.TransactionsModel import Transaction
-from sales.src.errors import InsufficientStock, InsufficientBalance
+from sales.src.utils.errors import InsufficientStock, InsufficientBalance
 
 @pytest.fixture
 def app():

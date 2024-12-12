@@ -1,7 +1,7 @@
 from flask_jwt_extended import create_access_token, create_refresh_token
 from werkzeug.exceptions import NotFound, BadRequest
-from shared.utils.utils import get_utc_now, format_phone
-from shared.models.CustomersModel import Customer
+from customers.src.utils.utils import get_utc_now, format_phone
+from customers.src.model.CustomersModel import Customer
 from customers.src.utils.errors import AuthenticationError
 from customers.src.utils.logger import logger
 
