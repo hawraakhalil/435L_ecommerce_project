@@ -28,14 +28,9 @@ class CustomerService:
     def get_customer(self, identifier):
         customer = self.get_customer_by_username(identifier) or self.get_customer_by_email(identifier) or self.get_customer_by_phone(identifier) or self.get_customer_by_id(identifier)
         if not customer:
+            logger.info(f'Customer with identifier {identifier} not found')
             raise NotFound(f'Customer with identifier {identifier} not found')
         return customer
-    
-    def is_customer_banned(customer_username):
-        customer = Customer.query.filter(Customer.id == customer_username).first()
-        if not customer:
-            return True
-        return customer.is_banned
     
     def register_customer(self, data):
         logger.info('Enter register customer service')

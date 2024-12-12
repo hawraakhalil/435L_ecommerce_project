@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from customers.src.extensions import db
-from customers.src.utils.utils import get_utc_now
+from admin.src.extensions import db
+from admin.src.utils.utils import get_utc_now
 
 class Customer(db.Model):
     __tablename__ = 'customers'

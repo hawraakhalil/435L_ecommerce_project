@@ -10,7 +10,15 @@ class AddItemSchema(Schema):
 
 class RestockItemSchema(Schema):
     item_id = fields.Integer(validate=validate.Range(min=1))
+    name = fields.String(validate=validate.Length(min=1))
     quantity = fields.Integer(required=True, validate=validate.Range(min=1))
+
+    @validates_schema
+    def validate_item_id(self, data, **kwargs):
+        if not data.get('item_id') and not data.get('name'):
+            raise ValidationError('Either item id or name must be provided')
+        if data.get('item_id') and data.get('name'):
+            raise ValidationError('Either item id or name must be provided, not both')
 
 class UpdateItemSchema(Schema):
     name = fields.String(validate=validate.Length(min=1))
