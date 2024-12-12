@@ -5,8 +5,8 @@ class Transaction(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, nullable=False)
-    items = db.Column(db.JSON, nullable=False)
-    items_quantities = db.Column(db.JSON, nullable=False)
+    items = db.Column(db.JSON, nullable=False, default=[])
+    items_quantities = db.Column(db.JSON, nullable=False, default=[])
     lbp_total_price = db.Column(db.Float, nullable=False)
     usd_total_price = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(255), nullable=False, default='completed')

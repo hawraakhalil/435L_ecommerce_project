@@ -19,6 +19,7 @@ class Customer(db.Model):
     usd_balance = db.Column(db.Float, nullable=False, default=0)
     status = db.Column(db.String(255), nullable=False, default='active')
     last_logout = db.Column(db.DateTime, nullable=True)
+    items = db.Column(db.JSON, nullable=False, default=[])
 
     created_at = db.Column(db.DateTime, default=get_utc_now, nullable=False)
 
