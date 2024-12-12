@@ -1,12 +1,10 @@
-import requests
 from datetime import datetime, timedelta
 from shared.db import db
 from shared.models.TransactionsModel import Transaction
 from shared.models.ItemsModel import Item
 from shared.models.CustomersModel import Customer
 from werkzeug.exceptions import NotFound, BadRequest
-import pybreaker
-from sales.errors import InsufficientStock, InsufficientBalance
+from sales.src.errors import InsufficientStock, InsufficientBalance
 
 
 class SalesService:

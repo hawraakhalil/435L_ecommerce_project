@@ -1,7 +1,7 @@
 from flask_jwt_extended import create_access_token, create_refresh_token
 
 from shared.models.AdminsModel import Admin
-from admin.errors import AuthenticationError
+from admin.src.errors import AuthenticationError
 from werkzeug.exceptions import NotFound
 from shared.utils.utils import get_utc_now, format_phone
 

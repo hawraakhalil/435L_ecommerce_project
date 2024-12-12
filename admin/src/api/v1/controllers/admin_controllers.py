@@ -3,11 +3,11 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from werkzeug.exceptions import NotFound
 from marshmallow import ValidationError
-from admin.errors import AuthenticationError
+from admin.src.errors import AuthenticationError
 
 from shared.db import db
-from admin.src.api.v1.admin_schema import RegisterAdminSchema, LoginAdminSchema, UpdateAdminSchema
-from admin.src.api.v1.admin_service import AdminService
+from admin.src.api.v1.schemas.admin_schema import RegisterAdminSchema, LoginAdminSchema, UpdateAdminSchema
+from admin.src.api.v1.services.admin_service import AdminService
 
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')

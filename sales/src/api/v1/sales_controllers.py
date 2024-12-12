@@ -7,7 +7,7 @@ from werkzeug.exceptions import NotFound, BadRequest
 from shared.db import db
 from sales.src.api.v1.sales_schema import PurchaseSchema, ReversePurchaseSchema, ItemSchema
 from sales.src.api.v1.sales_service import SalesService
-from sales.errors import InsufficientStock, InsufficientBalance
+from sales.src.errors import InsufficientStock, InsufficientBalance
 
 
 sales_bp = Blueprint('sales', __name__, url_prefix='/sales')
