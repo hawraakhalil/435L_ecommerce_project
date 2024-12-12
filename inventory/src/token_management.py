@@ -7,7 +7,7 @@ from inventory.src.model.AdminsModel import Admin
 def is_token_revoked(jwt_header, jwt_payload):
     admin_username = jwt_payload['sub']
     admin = Admin.query.filter(Admin.username == admin_username).first()
-    if admin.last_logout:
+    if admin and admin.last_logout:
         return jwt_payload['iat'] < admin.last_logout.timestamp()
     return False
 
