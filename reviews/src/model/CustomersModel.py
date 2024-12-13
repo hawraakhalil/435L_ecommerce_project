@@ -1,8 +1,69 @@
+"""
+reviews.models.customer
+=======================
+
+This module defines the `Customer` class, which represents customer data in the database.
+
+Classes
+-------
+Customer
+    A database model for storing customer-related information.
+"""
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from reviews.src.extensions import db
 from reviews.src.utils.utils import get_utc_now
 
+
 class Customer(db.Model):
+    """
+    A database model representing a customer.
+
+    Attributes
+    ----------
+    id : int
+        Unique identifier for the customer.
+    username : str
+        Unique username for the customer (required).
+    email : str
+        Customer's email address (required, unique).
+    password : str
+        Hashed password for the customer (required).
+    first_name : str
+        Customer's first name (required).
+    last_name : str
+        Customer's last name (required).
+    phone : str
+        Customer's phone number (required, unique).
+    age : int
+        Customer's age (required).
+    gender : str
+        Customer's gender (required).
+    marital_status : str
+        Customer's marital status (required).
+    lbp_balance : float
+        Customer's balance in Lebanese pounds (default 0).
+    usd_balance : float
+        Customer's balance in US dollars (default 0).
+    status : str
+        Customer's account status (default 'active').
+    last_logout : datetime, optional
+        Timestamp of the customer's last logout.
+    items : JSON
+        List of items the customer has purchased (default empty list).
+    created_at : datetime
+        Timestamp of the customer's account creation.
+
+    Methods
+    -------
+    set_password(password)
+        Hashes and sets the customer's password.
+    check_password(password)
+        Verifies if the given password matches the stored hashed password.
+    to_dict()
+        Converts the customer's attributes to a dictionary format.
+    """
+
     __tablename__ = 'customers'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -20,16 +81,44 @@ class Customer(db.Model):
     status = db.Column(db.String(255), nullable=False, default='active')
     last_logout = db.Column(db.DateTime, nullable=True)
     items = db.Column(db.JSON, nullable=False, default=[])
-
     created_at = db.Column(db.DateTime, default=get_utc_now, nullable=False)
 
     def set_password(self, password: str) -> None:
+        """
+        Hashes and sets the customer's password.
+
+        Parameters
+        ----------
+        password : str
+            The plain-text password to hash.
+        """
         self.password = generate_password_hash(password)
 
     def check_password(self, password: str) -> bool:
+        """
+        Verifies if the given password matches the stored hashed password.
+
+        Parameters
+        ----------
+        password : str
+            The plain-text password to check.
+
+        Returns
+        -------
+        bool
+            `True` if the password matches, `False` otherwise.
+        """
         return check_password_hash(self.password, password)
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
+        """
+        Converts the customer's attributes to a dictionary format.
+
+        Returns
+        -------
+        dict
+            A dictionary representation of the customer's attributes.
+        """
         return {
             'id': self.id,
             'username': self.username,
