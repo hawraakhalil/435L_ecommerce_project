@@ -1,4 +1,4 @@
-from sales.src.extensions import db
+from src.extensions import db
 
 class Item(db.Model):
     __tablename__ = 'items'

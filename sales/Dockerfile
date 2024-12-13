@@ -1,18 +1,24 @@
-FROM python:3.10-slim
+# Use the official Python image as a base image
+FROM python:3.11-slim
 
+# Set environment variables to prevent Python from buffering stdout and stderr
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Set a working directory in the container
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y gcc && rm -rf /var/lib/apt/lists/*
+# Copy the requirements file into the container
+COPY requirements.txt /app/
 
-COPY ./shared /app/shared
-
-COPY ./sales /app/sales
-
-ENV PIP_DEFAULT_TIMEOUT=100
-
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 5004
-ENV FLASK_APP=app.py
+# Copy the application code into the container
+COPY . /app/
 
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5004"]
+# Expose the application port
+EXPOSE 5004
+
+# Run the application
+CMD ["python", "app.py"]

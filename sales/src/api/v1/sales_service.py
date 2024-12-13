@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta
-from sales.src.model.CustomersModel import Customer
-from sales.src.model.ItemsModel import Item
-from sales.src.model.TransactionsModel import Transaction
+from src.model.CustomersModel import Customer
+from src.model.ItemsModel import Item
+from src.model.TransactionsModel import Transaction
 from werkzeug.exceptions import NotFound, BadRequest
-from sales.src.utils.errors import InsufficientStock, InsufficientBalance
-from sales.src.utils.logger import logger
+from src.utils.errors import InsufficientStock, InsufficientBalance
+from src.utils.logger import logger
 
 class SalesService:
     def __init__(self, db_session):
@@ -18,7 +18,7 @@ class SalesService:
     def get_item_by_name(item_name):
         return Item.query.filter(Item.name == item_name).first()
 
-    def get_item(self, item_id, item_name):
+    def get_item(self, item_id, item_name=None):
         item = self.get_item_by_id(item_id) or self.get_item_by_name(item_name)
         if not item:
             logger.info(f'Item with id {item_id} or name {item_name} not found')

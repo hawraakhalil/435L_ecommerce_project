@@ -3,12 +3,12 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from marshmallow import ValidationError
 from werkzeug.exceptions import NotFound, BadRequest
 
-from sales.src.extensions import db
-from sales.src.utils.logger import logger
+from src.extensions import db
+from src.utils.logger import logger
 
-from sales.src.api.v1.sales_schema import PurchaseSchema, ReversePurchaseSchema, ItemSchema
-from sales.src.api.v1.sales_service import SalesService
-from sales.src.utils.errors import InsufficientStock, InsufficientBalance
+from src.api.v1.sales_schema import PurchaseSchema, ReversePurchaseSchema, ItemSchema
+from src.api.v1.sales_service import SalesService
+from src.utils.errors import InsufficientStock, InsufficientBalance
 
 
 sales_bp = Blueprint('sales', __name__, url_prefix='/sales')

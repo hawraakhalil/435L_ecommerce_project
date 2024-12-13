@@ -1,6 +1,6 @@
 from flask import jsonify
-from sales.src.model.CustomersModel import Customer
-from sales.src.extensions import jwt
+from src.model.CustomersModel import Customer
+from src.extensions import jwt
 
 @jwt.token_in_blocklist_loader
 def is_token_revoked(jwt_header, jwt_payload):

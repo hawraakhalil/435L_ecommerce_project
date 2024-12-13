@@ -1,4 +1,4 @@
-from sales.src.extensions import db
+from src.extensions import db
 
 class Transaction(db.Model):
     __tablename__ = 'transactions'
@@ -19,5 +19,4 @@ class Transaction(db.Model):
             'items_quantities': self.items_quantities,
             'lbp_total_price': self.lbp_total_price,
             'usd_total_price': self.usd_total_price,
-            'created_at': self.created_at
         }
