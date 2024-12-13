@@ -102,7 +102,7 @@ def test_register_admin_duplicate_fields(client, admin_token, duplicate_field, v
     payload = {
         "first_name": "John",
         "last_name": "Doe",
-        "username": "uniqueuser",
+        "username": "testadmin",
         "password": "password123",
         "email": "unique@example.com",
         "phone": "87654321",

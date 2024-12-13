@@ -1,113 +1,121 @@
 import pytest
 from flask import Flask
 from flask_jwt_extended import create_access_token
+from customers.src.extensions import db
 from customers.app import create_app
-from shared.db import db
-from shared.models.CustomersModel import Customer
+from customers.src.model.CustomersModel import Customer
 
 @pytest.fixture
 def app():
+    """Create a Flask application for testing."""
     app = create_app()
-    app.config['TESTING'] = True
-    app.config['JWT_SECRET_KEY'] = 'test-secret-key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'  # Use in-memory database for tests
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+    app.config["TESTING"] = True
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"  # In-memory database
+    app.config["JWT_SECRET_KEY"] = "test_secret_key"
     with app.app_context():
         db.create_all()
-
-        customer = Customer(
-            username='testcustomer',
-            email='customer@test.com',
-            first_name='Test',
-            last_name='Customer',
-            phone='12345678',
-            age=30,
-            gender='male',
-            marital_status='single'
-        )
-        customer.set_password('password123')
-        db.session.add(customer)
-        db.session.commit()
-
-    yield app
-
-    with app.app_context():
+        yield app
         db.session.remove()
         db.drop_all()
 
-@pytest.fixture
-def client(app):
-    return app.test_client()
 
 @pytest.fixture
-def customer_token(app):
+def client(app):
+    """Create a test client for the app."""
+    return app.test_client()
+
+
+@pytest.fixture
+def setup_database(app):
+    """Populate the database with a test customer."""
     with app.app_context():
+        # Add a sample customer
         customer = Customer(
-            username='customer',
-            email='custom@test.com',
-            first_name='Test',
-            last_name='Customer',
-            phone='12345678',
-            age=30,
-            gender='male',
-            marital_status='single'
+            username="testuser",
+            email="testuser@example.com",
+            first_name="Test",
+            last_name="User",
+            phone="71000000",
+            age=25,
+            gender="male",
+            marital_status="single",
         )
-        customer.set_password('password123')
+        customer.set_password("password123")  # Set hashed password
         db.session.add(customer)
         db.session.commit()
 
-        token = create_access_token(identity=str(customer.id))
-        return token
 
+@pytest.fixture
+def auth_headers(app, setup_database):
+    """Generate authentication headers for a test customer."""
+    with app.app_context():
+        # Generate a valid JWT token for the test user
+        access_token = create_access_token(identity="testuser")
+        return {"Authorization": f"Bearer {access_token}"}
+    
 def test_register_customer(client):
-    payload = {
-        "first_name": "John",
-        "last_name": "Doe",
-        "username": "johndoe",
+    data = {
+        "username": "newuser",
+        "email": "newuser@example.com",
         "password": "password123",
-        "email": "johndoe@example.com",
-        "phone": "12345678",
-        "age": 25,
-        "gender": "male",
-        "marital_status": "single"
+        "first_name": "New",
+        "last_name": "User",
+        "phone": "72000000",
+        "age": 30,
+        "gender": "female",
+        "marital_status": "single",
     }
-    response = client.put('/customers/register_customer', json=payload)
+    response = client.put("/customers/register_customer", json=data)
     assert response.status_code == 201
-    assert response.json['access']
-    assert response.json['refresh']
+    assert "access" in response.json
+    assert "refresh" in response.json
 
-def test_login_customer(client):
-    payload = {
-        "identifier": "testcustomer",
-        "password": "password123"
-    }
-    response = client.post('/customers/login_customer', json=payload)
-    print(response.json)
-    assert response.status_code == 200
-    assert response.json['access']
-    assert response.json['refresh']
 
-def test_update_customer(client, customer_token):
-    headers = {"Authorization": f"Bearer {customer_token}"}
-    payload = {
-        "first_name": "Updated",
-        "last_name": "Updated",
-        "phone": "87654321"
-    }
-    response = client.put('/customers/update_customer', json=payload, headers=headers)
-    assert response.status_code == 200
-    assert response.json['message'] == "Customer updated successfully"
+def test_register_customer_validation_error(client):
+    data = {"username": "newuser"}
+    response = client.put("/customers/register_customer", json=data)
+    assert response.status_code == 400
+    assert "Validation error" in response.json["error"]
 
-def test_logout_customer(client, customer_token):
-    headers = {"Authorization": f"Bearer {customer_token}"}
-    response = client.delete('/customers/logout_customer', headers=headers)
-    assert response.status_code == 200
-    assert response.json['message'] == "Customer logged out successfully"
 
-def test_get_customer_info(client, customer_token):
-    headers = {"Authorization": f"Bearer {customer_token}"}
-    response = client.post('/customers/get_customer_info', headers=headers)
+def test_login_customer(client, setup_database):
+    """Test customer login."""
+    data = {"identifier": "testuser", "password": "password123"}
+    response = client.post("/customers/login_customer", json=data)
     assert response.status_code == 200
-    assert "username" in response.json
-    assert response.json["username"] == "customer"
+    assert "access" in response.json
+    assert "refresh" in response.json
+
+
+def test_login_customer_invalid_credentials(client, setup_database):
+    """Test login with invalid credentials."""
+    data = {"identifier": "testuser", "password": "wrongpassword"}
+    response = client.post("/customers/login_customer", json=data)
+    assert response.status_code == 403
+    assert "Invalid password for customer with username or email: testuser" in response.json["error"]
+
+
+def test_logout_customer(client, auth_headers):
+    response = client.delete("/customers/logout_customer", headers=auth_headers)
+    assert response.status_code == 200
+    assert response.json["message"] == "Customer logged out successfully"
+
+
+def test_update_customer(client, auth_headers):
+    data = {"first_name": "UpdatedName"}
+    response = client.put("/customers/update_customer", json=data, headers=auth_headers)
+    assert response.status_code == 200
+    assert response.json["message"] == "Customer updated successfully"
+
+
+def test_update_customer_validation_error(client, auth_headers):
+    data = {}
+    response = client.put("/customers/update_customer", json=data, headers=auth_headers)
+    assert response.status_code == 400
+    assert "Validation error" in response.json["error"]
+
+
+def test_get_customer_info(client, auth_headers):
+    response = client.post("/customers/get_customer_info", headers=auth_headers)
+    assert response.status_code == 200
+    assert response.json["username"] == "testuser"

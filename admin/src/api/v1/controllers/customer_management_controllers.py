@@ -43,11 +43,13 @@ def update_customer_profile():
     schema = UpdateCustomerProfileSchema()
     try:
         data = schema.load(data)
+        print(data)
     except ValidationError as e:
         logger.info(f'Validation error in update customer profile: {e.messages}')
         return jsonify({'error': f'Validation error: {e.messages}'}), 400
     
     service = CustomerManagementService(db_session=db.session)
+    print(service.update_customer_profile(data))
     try:
         result = service.update_customer_profile(data)
         return jsonify(result), 200

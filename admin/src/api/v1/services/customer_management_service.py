@@ -51,40 +51,41 @@ class CustomerManagementService:
         self.db_session.commit()
         logger.info(f'Top up customer successfully')
         return {'lbp_balance': customer.lbp_balance, 'usd_balance': customer.usd_balance}
-
+    
     def update_customer_profile(self, data):
         logger.info('Enter update customer profile service')
-        customer_id = data['customer_id']
-        first_name = data['first_name']
-        last_name = data['last_name']
-        phone = data['phone']
-        age = data['age']
-        gender = data['gender']
-        marital_status = data['marital_status']
+
+        # Ensure customer_id is always provided
+        customer_id = data.get('customer_id')
+        if not customer_id:
+            logger.error('Customer ID is missing')
+            raise ValueError('Customer ID is required')
 
         customer = self.get_customer(customer_id)
 
-        if first_name:
-            logger.info(f'Update customer profile service: first_name: {first_name}')
-            customer.first_name = first_name
-        if last_name:
-            logger.info(f'Update customer profile service: last_name: {last_name}')
-            customer.last_name = last_name
-        if phone:
-            logger.info(f'Update customer profile service: phone: {phone}')
-            customer.phone = phone
-        if age:
-            logger.info(f'Update customer profile service: age: {age}')
-            customer.age = age
-        if gender:
-            logger.info(f'Update customer profile service: gender: {gender}')
-            customer.gender = gender
-        if marital_status:
-            logger.info(f'Update customer profile service: marital_status: {marital_status}')
-            customer.marital_status = marital_status
+        # Dynamically update only the fields present in the data
+        if 'first_name' in data:
+            logger.info(f'Updating first_name to: {data["first_name"]}')
+            customer.first_name = data['first_name']
+        if 'last_name' in data:
+            logger.info(f'Updating last_name to: {data["last_name"]}')
+            customer.last_name = data['last_name']
+        if 'phone' in data:
+            logger.info(f'Updating phone to: {data["phone"]}')
+            customer.phone = data['phone']
+        if 'age' in data:
+            logger.info(f'Updating age to: {data["age"]}')
+            customer.age = data['age']
+        if 'gender' in data:
+            logger.info(f'Updating gender to: {data["gender"]}')
+            customer.gender = data['gender']
+        if 'marital_status' in data:
+            logger.info(f'Updating marital_status to: {data["marital_status"]}')
+            customer.marital_status = data['marital_status']
 
+        # Commit the updates to the database
         self.db_session.commit()
-        logger.info(f'Update customer profile successfully')
+        logger.info('Customer profile updated successfully')
         return customer.to_dict()
 
     def reverse_transaction(self, data):

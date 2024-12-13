@@ -2,7 +2,6 @@ from flask import Flask, jsonify
 from admin.src.utils.logger import logger
 from admin.src.extensions import db, migrate, jwt, cors
 from admin.src.config import get_config
-from admin.src.token_management import is_token_revoked, revoked_token_callback
 
 from admin.src.model.AdminsModel import Admin
 from admin.src.model.CustomersModel import Customer
@@ -29,6 +28,10 @@ app = create_app()
 def index():
     logger.info('Enter index')
     return jsonify({'message': 'Admin API'}), 200
+
+with app.app_context():
+    db.create_all()
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

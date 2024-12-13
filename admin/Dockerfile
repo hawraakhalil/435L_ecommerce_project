@@ -1,20 +1,32 @@
-# NEEDS CHANGING
+# Use the official Python image as the base
+FROM python:3.11-slim
 
-FROM python:3.10-slim
-
+# Set the working directory inside the container
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y gcc && rm -rf /var/lib/apt/lists/*
+# Copy requirements.txt into the container
+COPY requirements.txt .
 
-COPY ./shared /app/shared
-
-COPY ./admin /app/admin
-
-ENV PIP_DEFAULT_TIMEOUT=100
-
+# Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 5000
-ENV FLASK_APP=app.py
+# Copy the entire admin directory into the container
+COPY . .
 
+# Add /app to the PYTHONPATH to recognize src as a module
+ENV PYTHONPATH=/app
+
+# Set environment variables
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=production
+ENV SQLALCHEMY_DATABASE_URI=sqlite:////app/data/admin.db
+ENV SQLALCHEMY_TRACK_MODIFICATIONS=False
+
+# Expose the port Flask will run on
+EXPOSE 5000
+
+# Run database migrations
+RUN flask db upgrade || true
+
+# Start the Flask application
 CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
