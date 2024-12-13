@@ -68,7 +68,7 @@ def reverse_purchase():
         logger.info(f'Internal server error in reverse purchase: {e}')
         return jsonify({'error': str(e)}), 500
 
-@sales_bp.route('/get_customer_transactions', methods=['POST'])
+@sales_bp.route('/get_customer_transactions', methods=['GET'])
 @jwt_required()
 def get_customer_transactions():
     logger.info('Enter get customer transactions')
@@ -84,7 +84,8 @@ def get_customer_transactions():
         logger.info(f'Internal server error in get customer transactions: {e}')
         return jsonify({'error': str(e)}), 500
 
-@sales_bp.route('/inquire_item', methods=['GET'])
+@sales_bp.route('/inquire_item', methods=['POST'])
+@jwt_required()
 def inquire_item():
     logger.info('Enter inquire item')
     data = request.get_json()
@@ -106,6 +107,7 @@ def inquire_item():
         return jsonify({'error': str(e)}), 500
 
 @sales_bp.route('/get_all_items', methods=['GET'])
+@jwt_required()
 def get_all_items():
     logger.info('Enter get all items')
     service = SalesService(db_session=db.session)

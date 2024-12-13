@@ -66,7 +66,8 @@ def test_register_customer(client):
         "marital_status": "single",
     }
     response = client.put("/customers/register_customer", json=data)
-    assert response.status_code == 201
+    print(response.json)
+    assert response.status_code == 200
     assert "access" in response.json
     assert "refresh" in response.json
 

@@ -1,6 +1,6 @@
 from flask import jsonify
-from inventory.src.extensions import jwt
-from inventory.src.model.AdminsModel import Admin
+from src.extensions import jwt
+from src.model.AdminsModel import Admin
 
 
 @jwt.token_in_blocklist_loader

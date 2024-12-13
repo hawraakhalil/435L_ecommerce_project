@@ -1,7 +1,7 @@
 from werkzeug.exceptions import NotFound, BadRequest
 
-from inventory.src.model.ItemsModel import Item
-from inventory.src.utils.logger import logger
+from src.model.ItemsModel import Item
+from src.utils.logger import logger
 
 
 class InventoryService:

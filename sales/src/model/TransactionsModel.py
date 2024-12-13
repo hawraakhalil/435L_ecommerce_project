@@ -19,4 +19,5 @@ class Transaction(db.Model):
             'items_quantities': self.items_quantities,
             'lbp_total_price': self.lbp_total_price,
             'usd_total_price': self.usd_total_price,
+            'status': self.status
         }

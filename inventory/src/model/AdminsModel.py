@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from inventory.src.extensions import db
-from inventory.src.utils.utils import get_utc_now
+from src.extensions import db
+from src.utils.utils import get_utc_now
 
 class Admin(db.Model):
     __tablename__ = 'admins'

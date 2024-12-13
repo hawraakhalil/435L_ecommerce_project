@@ -3,18 +3,17 @@ from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError
 from werkzeug.exceptions import NotFound, BadRequest
 
-from inventory.src.extensions import db
-from inventory.src.utils.logger import logger
+from src.extensions import db
+from src.utils.logger import logger
 
-from inventory.src.api.v1.inventory_service import InventoryService
-from inventory.src.api.v1.inventory_schema import AddItemSchema, RestockItemSchema, UpdateItemSchema, ItemSchema, CategorySchema
+from src.api.v1.inventory_service import InventoryService
+from src.api.v1.inventory_schema import AddItemSchema, RestockItemSchema, UpdateItemSchema, ItemSchema, CategorySchema
 
 
 inventory_bp = Blueprint('inventory', __name__, url_prefix='/inventory')
 
 
 @inventory_bp.route('/add_item', methods=['POST'])
-@jwt_required()
 def add_item():
     logger.info('Enter add item')
     data = request.get_json()
@@ -119,12 +118,13 @@ def get_item():
     service = InventoryService(db_session=db.session)
     try:
         result = service.get_item(item_id, name)
-        return jsonify(result), 200
+        return jsonify(result.to_dict()), 200  # Convert the result to a dictionary
     except NotFound as e:
         return jsonify({'error': str(e)}), 404
     except Exception as e:
         logger.error(f'Internal server error in get item: {e}')
         return jsonify({'error': str(e)}), 500
+
     
 @inventory_bp.route('/get_items', methods=['GET'])
 @jwt_required()

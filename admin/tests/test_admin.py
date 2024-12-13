@@ -62,6 +62,7 @@ def test_login_admin(client, admin_token):
         "password": "password123"
     }
     response = client.post('/admin/login_admin', json=payload)
+    print(admin_token)
     assert response.status_code == 200
     assert response.json['access']
     assert response.json['refresh']
